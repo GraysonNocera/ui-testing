@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Pressable, Animated } from 'react-native';
 import { Colors, Chip, Button } from 'react-native-ui-lib';
 import React, { useRef } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
 
 const colors = {
   primary: '#ffcfcc',
@@ -10,20 +11,21 @@ const colors = {
 };
 
 export default function App() {
-  const scale = useRef(Animated.Value(1)).current;
+  const scale = useRef(new Animated.Value(1)).current;
 
-  const handlePressIn = (buttonRef) => {
+  const handlePressIn = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
     Animated.timing(scale, {
       toValue: 0.9,
-      duration: 300,
+      duration: 100,
       useNativeDriver: true,
     }).start();
   };
 
-  const handlePressOut = (buttonRef) => {
+  const handlePressOut = () => {
     Animated.timing(scale, {
       toValue: 1,
-      duration: 300,
+      duration: 100,
       useNativeDriver: true,
     }).start();
   };
@@ -38,7 +40,7 @@ export default function App() {
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
-        <Animated.View style={styles.connectToBluetooth}>
+        <Animated.View style={{...styles.connectToBluetooth, transform: [{scale: scale}]}}>
           <Text>Press me</Text>
         </Animated.View>
       </Pressable>
