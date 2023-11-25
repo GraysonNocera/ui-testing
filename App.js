@@ -1,19 +1,31 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Pressable, Animated } from 'react-native';
 import { Colors, Chip, Button } from 'react-native-ui-lib';
 import React, { useRef } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 
-export default function App() {
+const colors = {
+  primary: '#ffcfcc',
+  secondary: '#cce6ff',
+};
 
-  const buttonRef = useRef(null);
+export default function App() {
+  const scale = useRef(Animated.Value(1)).current;
 
   const handlePressIn = (buttonRef) => {
-    buttonRef.transitionTo({ scale: 0.9 }, 300); // Shrink the button on press
+    Animated.timing(scale, {
+      toValue: 0.9,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
   };
 
   const handlePressOut = (buttonRef) => {
-    buttonRef.transitionTo({ scale: 1 }, 300); // Return to normal size on release
+    Animated.timing(scale, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
   };
 
   return (
@@ -22,14 +34,14 @@ export default function App() {
     start={{ x: 0, y: 0 }}
     end={{ x: 1, y: 1 }}
     style={styles.container}>
-      <Button
-              backgroundColor="#5b76c7"
-              label="Connect to Bluetooth"
-              labelStyle={{fontWeight: '500', fontSize: 20, color: 'white'}} // text style
-              enableShadow
-              borderRadius={20} // how rounded the edges are
-              onPress={() => console.log('Connect to Bluetooth')}
-            />
+      <Pressable
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+      >
+        <Animated.View style={styles.connectToBluetooth}>
+          <Text>Press me</Text>
+        </Animated.View>
+      </Pressable>
       <StatusBar style="auto" />
     </LinearGradient>
   );
@@ -46,5 +58,10 @@ const styles = StyleSheet.create({
     height: 150,
     width: 200,
     borderRadius: 20, // <-- Outer Border Radius
+  },
+  connectToBluetooth: {
+    backgroundColor: '#ffcfcc',
+    borderRadius: 20,
+    padding: 10,
   },
 });
